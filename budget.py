@@ -5,13 +5,21 @@ class Category:
 	def __init__(self, category_name):
 		self.category = category_name
 
-	def deposit(self, amount, description):
-		if description is None:
-			description == ""
+	def __str__(self):
+		title = f"{self.category:*^30}\n"
+		items = ""
+		total = 0
+		for item in self.ledger:
+			items += f"{item['description'][0:23]:23}" + f"{item['amount']:>7.2f}" + "\n"
+			total += item['amount']
+
+		output = title + items + "Total: " + str(total)
+		return output
+
+	def deposit(self, amount, description = ""):
 		self.ledger.append({"amount": amount, "description": description})
 
-	def withdraw(self, amount, description):
-		#self.ledger.append({"amount": -amount, "description": description})
+	def withdraw(self, amount, description = ""):
 		if (self.check_funds(amount)):
 			self.ledger.append({"amount": -amount, "description": description})
 			return True
@@ -23,10 +31,10 @@ class Category:
 			money += item["amount"]
 		return money
 
-	def transfer(self, amount, category):
+	def transfer(self, amount, object):
 		if (self.check_funds(amount)):
-			self.withdraw(amount, "Transfer to " + category.category)
-			category.deposit(amount, "Transfer from " + self.category)
+			self.withdraw(amount, "Transfer to " + object.category)
+			object.deposit(amount, "Transfer from " + self.category)
 			return True
 		return False
 
